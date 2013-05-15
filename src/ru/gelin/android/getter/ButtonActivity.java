@@ -4,6 +4,8 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
@@ -37,6 +39,13 @@ public class ButtonActivity extends Activity implements DialogInterface.OnClickL
 
     public void changeUrl(View view) {
         showDialog(URL_DIALOG);
+    }
+
+    public void getIt(View view) {
+        Intent intent = new Intent(this, GetActivity.class);
+        intent.setData(Uri.parse(this.url));
+        intent.setFlags(Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS|Intent.FLAG_ACTIVITY_NO_HISTORY);
+        startActivity(intent);
     }
 
     void setUrl(String url) {
