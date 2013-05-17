@@ -3,3 +3,5 @@ syntax: glob
 gen/*
 out/*
 local.properties
+upload.credentials.properties
+bin/*
