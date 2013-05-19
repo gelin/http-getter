@@ -1,21 +1,20 @@
 package ru.gelin.android.getter;
 
+import android.app.ActionBar;
 import android.app.Activity;
 import android.graphics.Bitmap;
 import android.net.http.SslError;
 import android.os.Bundle;
 import android.view.Window;
-import android.webkit.SslErrorHandler;
-import android.webkit.WebChromeClient;
-import android.webkit.WebView;
-import android.webkit.WebViewClient;
+import android.webkit.*;
 
 public class GetActivity extends Activity {
 
     Preferences preferences;
 
     public void onCreate(Bundle savedInstanceState) {
-        getWindow().requestFeature(Window.FEATURE_PROGRESS);
+        requestWindowFeature(Window.FEATURE_PROGRESS);
+        requestWindowFeature(Window.FEATURE_LEFT_ICON);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.get);
 
@@ -26,7 +25,10 @@ public class GetActivity extends Activity {
             setTitle(this.preferences.getTitle());
         }
 
-        //TODO: set activity icon
+        setFeatureDrawable(Window.FEATURE_LEFT_ICON, this.preferences.getIcon());
+
+        //http://stackoverflow.com/questions/3462582/display-the-android-webviews-favicon
+        WebIconDatabase.getInstance().open(getDir("icons", MODE_PRIVATE).getPath());
 
         WebView web = (WebView)findViewById(R.id.web);
         web.setWebChromeClient(new MyWebChromeClient());
@@ -72,8 +74,8 @@ public class GetActivity extends Activity {
 
         @Override
         public void onReceivedIcon(WebView view, Bitmap icon) {
-            //TODO set activity icon
             preferences.setIcon(icon);
+            setFeatureDrawable(Window.FEATURE_LEFT_ICON, preferences.getIcon());
         }
     }
 

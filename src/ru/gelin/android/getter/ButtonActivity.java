@@ -71,6 +71,7 @@ public class ButtonActivity extends Activity implements DialogInterface.OnClickL
             this.buttonView.setText(getString(R.string.get_button, this.preferences.getTitle()));
         }
         Drawable icon = this.preferences.getIcon();
+        icon.setFilterBitmap(false);
         this.buttonView.setCompoundDrawables(null, null, null, icon);
     }
 

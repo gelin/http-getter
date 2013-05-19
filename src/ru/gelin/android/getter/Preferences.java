@@ -25,6 +25,7 @@ public class Preferences {
 
     static final String ICON_FILE = "favicon.png";
     static final int ICON_DEFAULT = R.drawable.http;
+    static final Rect ICON_RECT = new Rect(0, 0, 128, 128);
 
     Context context;
     SharedPreferences preferences;
@@ -66,13 +67,13 @@ public class Preferences {
             file = this.context.openFileInput(ICON_FILE);
         } catch (FileNotFoundException e) {
             Drawable drawable = this.context.getResources().getDrawable(ICON_DEFAULT);
-            drawable.setBounds(0, 0, 128, 128); //TODO extract bounds from resources
+            drawable.setBounds(ICON_RECT);
             return drawable;
         }
         Bitmap bitmap = BitmapFactory.decodeStream(file);
-        Rect rect = new Rect(0, 0, bitmap.getWidth(), bitmap.getHeight());
-        Drawable drawable = new BitmapDrawable(this.context.getResources(), bitmap);
-        drawable.setBounds(rect);
+        BitmapDrawable drawable = new BitmapDrawable(this.context.getResources(), bitmap);
+        //drawable.setFilterBitmap(false);
+        drawable.setBounds(ICON_RECT);
         return drawable;
     }
 
