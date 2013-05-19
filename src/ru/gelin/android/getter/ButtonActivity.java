@@ -5,6 +5,7 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
@@ -61,6 +62,7 @@ public class ButtonActivity extends Activity implements DialogInterface.OnClickL
         this.urlView.setText(url);
         if (clear) {
             this.preferences.setTitle(Preferences.TITLE_DEFAULT);
+            this.preferences.clearIcon();
         }
         String title = this.preferences.getTitle();
         if (title == null || title.length() == 0) {
@@ -68,6 +70,8 @@ public class ButtonActivity extends Activity implements DialogInterface.OnClickL
         } else {
             this.buttonView.setText(getString(R.string.get_button, this.preferences.getTitle()));
         }
+        Drawable icon = this.preferences.getIcon();
+        this.buttonView.setCompoundDrawables(null, null, null, icon);
     }
 
     @Override

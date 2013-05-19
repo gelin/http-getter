@@ -1,6 +1,7 @@
 package ru.gelin.android.getter;
 
 import android.app.Activity;
+import android.graphics.Bitmap;
 import android.net.http.SslError;
 import android.os.Bundle;
 import android.view.Window;
@@ -24,6 +25,8 @@ public class GetActivity extends Activity {
         if (title != null && title.length() > 0) {
             setTitle(this.preferences.getTitle());
         }
+
+        //TODO: set activity icon
 
         WebView web = (WebView)findViewById(R.id.web);
         web.setWebChromeClient(new MyWebChromeClient());
@@ -67,6 +70,11 @@ public class GetActivity extends Activity {
             preferences.setTitle(title);
         }
 
+        @Override
+        public void onReceivedIcon(WebView view, Bitmap icon) {
+            //TODO set activity icon
+            preferences.setIcon(icon);
+        }
     }
 
 }

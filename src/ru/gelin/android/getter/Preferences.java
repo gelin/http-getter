@@ -2,7 +2,18 @@ package ru.gelin.android.getter;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Rect;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
+import android.os.Environment;
 import android.preference.PreferenceManager;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 
 public class Preferences {
 
@@ -12,9 +23,14 @@ public class Preferences {
     static final String TITLE_PREF = "title";
     public static final String TITLE_DEFAULT = "";
 
+    static final String ICON_FILE = "favicon.png";
+    static final int ICON_DEFAULT = R.drawable.http;
+
+    Context context;
     SharedPreferences preferences;
 
     public Preferences(Context context) {
+        this.context = context;
         this.preferences = PreferenceManager.getDefaultSharedPreferences(context);
     }
 
@@ -32,6 +48,36 @@ public class Preferences {
 
     public void setTitle(String title) {
         this.preferences.edit().putString(TITLE_PREF, title).commit();
+    }
+
+    public void setIcon(Bitmap icon) {
+        FileOutputStream file;
+        try {
+            file = this.context.openFileOutput(ICON_FILE, Context.MODE_PRIVATE);
+        } catch (FileNotFoundException e) {
+            throw new RuntimeException(e); //should never be happen
+        }
+        icon.compress(Bitmap.CompressFormat.PNG, 100, file);
+    }
+
+    public Drawable getIcon() {
+        FileInputStream file;
+        try {
+            file = this.context.openFileInput(ICON_FILE);
+        } catch (FileNotFoundException e) {
+            Drawable drawable = this.context.getResources().getDrawable(ICON_DEFAULT);
+            drawable.setBounds(0, 0, 128, 128); //TODO extract bounds from resources
+            return drawable;
+        }
+        Bitmap bitmap = BitmapFactory.decodeStream(file);
+        Rect rect = new Rect(0, 0, bitmap.getWidth(), bitmap.getHeight());
+        Drawable drawable = new BitmapDrawable(this.context.getResources(), bitmap);
+        drawable.setBounds(rect);
+        return drawable;
+    }
+
+    public void clearIcon() {
+        this.context.deleteFile(ICON_FILE);
     }
 
 }
