@@ -3,8 +3,11 @@ package ru.gelin.android.getter;
 import android.app.ActionBar;
 import android.app.Activity;
 import android.graphics.Bitmap;
+import android.graphics.drawable.Drawable;
 import android.net.http.SslError;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
 import android.view.Window;
 import android.webkit.*;
 
@@ -12,9 +15,15 @@ public class GetActivity extends Activity {
 
     Preferences preferences;
 
-    public void onCreate(Bundle savedInstanceState) {
+    void requestFeatures() {
         requestWindowFeature(Window.FEATURE_PROGRESS);
-        requestWindowFeature(Window.FEATURE_LEFT_ICON);
+        if (Build.VERSION.SDK_INT < 11) {
+            requestWindowFeature(Window.FEATURE_LEFT_ICON);
+        }
+    }
+
+    public void onCreate(Bundle savedInstanceState) {
+        requestFeatures();
         super.onCreate(savedInstanceState);
         setContentView(R.layout.get);
 
@@ -25,7 +34,7 @@ public class GetActivity extends Activity {
             setTitle(this.preferences.getTitle());
         }
 
-        setFeatureDrawable(Window.FEATURE_LEFT_ICON, this.preferences.getIcon());
+        setIcon(this.preferences.getIcon());
 
         //http://stackoverflow.com/questions/3462582/display-the-android-webviews-favicon
         WebIconDatabase.getInstance().open(getDir("icons", MODE_PRIVATE).getPath());
@@ -35,6 +44,14 @@ public class GetActivity extends Activity {
         web.setWebViewClient(new MyWebViewClient());
         setProgressBarVisibility(true);
         web.loadUrl(getIntent().getDataString());
+    }
+
+    void setIcon(Drawable icon) {
+        if (Build.VERSION.SDK_INT < 11) {
+            setFeatureDrawable(Window.FEATURE_LEFT_ICON, icon);
+        } else if (Build.VERSION.SDK_INT >= 14) {
+            getActionBar().setIcon(icon);
+        }
     }
 
     static class MyWebViewClient extends WebViewClient {
@@ -75,8 +92,9 @@ public class GetActivity extends Activity {
         @Override
         public void onReceivedIcon(WebView view, Bitmap icon) {
             preferences.setIcon(icon);
-            setFeatureDrawable(Window.FEATURE_LEFT_ICON, preferences.getIcon());
+            setIcon(preferences.getIcon());
         }
+
     }
 
 }
