@@ -7,7 +7,10 @@ import android.preference.PreferenceManager;
 public class Preferences {
 
     static final String URL_PREF = "url";
-    static final String URL_DEFAULT = "http://example.net/";
+    public static final String URL_DEFAULT = "http://example.net/";
+
+    static final String TITLE_PREF = "title";
+    public static final String TITLE_DEFAULT = "";
 
     SharedPreferences preferences;
 
@@ -21,6 +24,14 @@ public class Preferences {
 
     public void setUrl(String url) {
         this.preferences.edit().putString(URL_PREF, url).commit();
+    }
+
+    public String getTitle() {
+        return this.preferences.getString(TITLE_PREF, TITLE_DEFAULT);
+    }
+
+    public void setTitle(String title) {
+        this.preferences.edit().putString(TITLE_PREF, title).commit();
     }
 
 }

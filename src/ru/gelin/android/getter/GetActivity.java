@@ -11,10 +11,20 @@ import android.webkit.WebViewClient;
 
 public class GetActivity extends Activity {
 
+    Preferences preferences;
+
     public void onCreate(Bundle savedInstanceState) {
         getWindow().requestFeature(Window.FEATURE_PROGRESS);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.get);
+
+        this.preferences = new Preferences(this);
+
+        String title = this.preferences.getTitle();
+        if (title != null && title.length() > 0) {
+            setTitle(this.preferences.getTitle());
+        }
+
         WebView web = (WebView)findViewById(R.id.web);
         web.setWebChromeClient(new MyWebChromeClient());
         web.setWebViewClient(new MyWebViewClient());
@@ -43,11 +53,20 @@ public class GetActivity extends Activity {
     }
 
     class MyWebChromeClient extends WebChromeClient {
+
+        @Override
         public void onProgressChanged(WebView view, int progress) {
             // Activities and WebViews measure progress with different scales.
             // The progress meter will automatically disappear when we reach 100%
             setProgress(progress * 100);
         }
+
+        @Override
+        public void onReceivedTitle(WebView view, String title) {
+            setTitle(title);
+            preferences.setTitle(title);
+        }
+
     }
 
 }

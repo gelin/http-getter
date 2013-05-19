@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">HTTP Getter</string>
-    <string name="get_button">GET it!</string>
+    <string name="get_button">GET %s</string>
+    <string name="get_button_default">GET it!</string>
     <string name="enter_url">Enter URL</string>
 </resources>

@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
@@ -15,10 +16,11 @@ public class ButtonActivity extends Activity implements DialogInterface.OnClickL
 
     static final int URL_DIALOG = 1;
 
-    String url = "http://example.com/";
+    Preferences preferences;
+    String url = Preferences.URL_DEFAULT;
     EditText urlEdit;
     TextView urlView;
-    Preferences preferences;
+    Button buttonView;
 
     /**
      * Called when the activity is first created.
@@ -27,14 +29,15 @@ public class ButtonActivity extends Activity implements DialogInterface.OnClickL
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.button);
-        this.urlView = (TextView)findViewById(R.id.url);
         this.preferences = new Preferences(this);
+        this.urlView = (TextView)findViewById(R.id.url);
+        this.buttonView = (Button)findViewById(R.id.button);
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        setUrl(this.preferences.getUrl());
+        setUrl(this.preferences.getUrl(), false);
     }
 
     public void changeUrl(View view) {
@@ -49,9 +52,22 @@ public class ButtonActivity extends Activity implements DialogInterface.OnClickL
     }
 
     void setUrl(String url) {
+        setUrl(url, true);
+    }
+
+    void setUrl(String url, boolean clear) {
         this.url = url;
         this.preferences.setUrl(url);
         this.urlView.setText(url);
+        if (clear) {
+            this.preferences.setTitle(Preferences.TITLE_DEFAULT);
+        }
+        String title = this.preferences.getTitle();
+        if (title == null || title.length() == 0) {
+            this.buttonView.setText(R.string.get_button_default);
+        } else {
+            this.buttonView.setText(getString(R.string.get_button, this.preferences.getTitle()));
+        }
     }
 
     @Override
