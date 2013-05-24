@@ -54,7 +54,7 @@ public class GetActivity extends Activity {
         }
     }
 
-    static class MyWebViewClient extends WebViewClient {
+    class MyWebViewClient extends WebViewClient {
 
         @Override
         public boolean shouldOverrideUrlLoading(WebView view, String url) {
@@ -69,6 +69,21 @@ public class GetActivity extends Activity {
             // this will ignore the Ssl error and will go forward to your site
             if (handler != null) {
                 handler.proceed();
+            }
+        }
+
+        @Override
+        public void onReceivedHttpAuthRequest(WebView view, HttpAuthHandler handler, String host, String realm) {
+            if (handler == null) {
+                return;
+            }
+            if (!handler.useHttpAuthUsernamePassword()) {
+                handler.cancel();
+            }
+            if (preferences.isBasicAuth()) {
+                handler.proceed(preferences.getUserName(), preferences.getPassword());
+            } else {
+                handler.cancel();
             }
         }
 
