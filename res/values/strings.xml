@@ -4,4 +4,8 @@
     <string name="get_button">GET %s</string>
     <string name="get_button_default">GET it!</string>
     <string name="enter_url">Enter URL</string>
+    <string name="url">URL</string>
+    <string name="basic_auth">Basic auth</string>
+    <string name="username">username</string>
+    <string name="password">password</string>
 </resources>

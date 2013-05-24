@@ -10,6 +10,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.TextView;
 
@@ -19,9 +20,12 @@ public class ButtonActivity extends Activity implements DialogInterface.OnClickL
 
     Preferences preferences;
     String url = Preferences.URL_DEFAULT;
-    EditText urlEdit;
     TextView urlView;
     Button buttonView;
+    EditText urlEdit;
+    CheckBox basicAuthCheckBox;
+    EditText userNameEdit;
+    EditText passwordEdit;
 
     /**
      * Called when the activity is first created.
@@ -63,6 +67,9 @@ public class ButtonActivity extends Activity implements DialogInterface.OnClickL
         if (clear) {
             this.preferences.setTitle(Preferences.TITLE_DEFAULT);
             this.preferences.clearIcon();
+            this.preferences.setBasicAuth(false);
+            this.preferences.setUserName(Preferences.USERNAME_DEFAULT);
+            this.preferences.setPassword(Preferences.PASSWORD_DEFAULT);
         }
         String title = this.preferences.getTitle();
         if (title == null || title.length() == 0) {
@@ -75,14 +82,26 @@ public class ButtonActivity extends Activity implements DialogInterface.OnClickL
         this.buttonView.setCompoundDrawables(null, null, null, icon);
     }
 
+    void setBasicAuth(boolean auth, String username, String password) {
+        this.preferences.setBasicAuth(auth);
+        if (auth) {
+            this.preferences.setUserName(username);
+            this.preferences.setPassword(password);
+        }
+    }
+
     @Override
     protected Dialog onCreateDialog(int id) {
         switch (id) {
             case URL_DIALOG:
                 AlertDialog.Builder builder = new AlertDialog.Builder(this);
-                this.urlEdit = (EditText)getLayoutInflater().inflate(R.layout.url_edit, null);
+                View layout = getLayoutInflater().inflate(R.layout.url_dialog, null);
+                this.urlEdit = (EditText)layout.findViewById(R.id.url);
+                this.basicAuthCheckBox = (CheckBox)layout.findViewById(R.id.basicauth);
+                this.userNameEdit = (EditText)layout.findViewById(R.id.username);
+                this.passwordEdit = (EditText)layout.findViewById(R.id.password);
                 builder.setTitle(R.string.enter_url)
-                       .setView(urlEdit)
+                       .setView(layout)
                        .setPositiveButton(android.R.string.ok, this)
                        .setNegativeButton(android.R.string.cancel, this);
                 return builder.create();
@@ -96,6 +115,10 @@ public class ButtonActivity extends Activity implements DialogInterface.OnClickL
         switch (id) {
             case URL_DIALOG:
                 this.urlEdit.setText(this.url);
+                this.basicAuthCheckBox.setChecked(this.preferences.isBasicAuth());
+                this.userNameEdit.setText(this.preferences.getUserName());
+                this.passwordEdit.setText(this.preferences.getPassword());
+                updateDialogAuth(this.basicAuthCheckBox);
                 return;
             default:
                 super.onPrepareDialog(id, dialog);
@@ -107,8 +130,16 @@ public class ButtonActivity extends Activity implements DialogInterface.OnClickL
         switch (id) {
             case DialogInterface.BUTTON_POSITIVE:
                 setUrl(this.urlEdit.getText().toString());
+                setBasicAuth(this.basicAuthCheckBox.isChecked(),
+                        this.userNameEdit.getText().toString(), this.passwordEdit.getText().toString());
                 return;
         }
+    }
+
+    public void updateDialogAuth(View view) {
+        boolean checked = ((CheckBox)view).isChecked();
+        this.userNameEdit.setVisibility(checked ? View.VISIBLE : View.GONE);
+        this.passwordEdit.setVisibility(checked ? View.VISIBLE : View.GONE);
     }
 
 }

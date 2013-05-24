@@ -21,6 +21,15 @@ public class Preferences {
     static final String URL_PREF = "url";
     public static final String URL_DEFAULT = "http://example.net/";
 
+    static final String BASICAUTH_PREF = "basicauth";
+    public static final boolean BASICAUTH_DEFAULT = false;
+
+    static final String USERNAME_PREF = "username";
+    public static final String USERNAME_DEFAULT = "";
+
+    static final String PASSWORD_PREF = "password";
+    public static final String PASSWORD_DEFAULT = "";
+
     static final String TITLE_PREF = "title";
     public static final String TITLE_DEFAULT = "";
 
@@ -42,6 +51,30 @@ public class Preferences {
 
     public void setUrl(String url) {
         this.preferences.edit().putString(URL_PREF, url).commit();
+    }
+
+    public boolean isBasicAuth() {
+        return this.preferences.getBoolean(BASICAUTH_PREF, BASICAUTH_DEFAULT);
+    }
+
+    public void setBasicAuth(boolean auth) {
+        this.preferences.edit().putBoolean(BASICAUTH_PREF, auth).commit();
+    }
+
+    public String getUserName() {
+        return this.preferences.getString(USERNAME_PREF, USERNAME_DEFAULT);
+    }
+
+    public void setUserName(String username) {
+        this.preferences.edit().putString(USERNAME_PREF, username).commit();
+    }
+
+    public String getPassword() {
+        return this.preferences.getString(PASSWORD_PREF, PASSWORD_DEFAULT);
+    }
+
+    public void setPassword(String password) {
+        this.preferences.edit().putString(PASSWORD_PREF, password).commit();
     }
 
     public String getTitle() {
