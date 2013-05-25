@@ -8,8 +8,12 @@ import android.net.http.SslError;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
+import android.util.Base64;
 import android.view.Window;
 import android.webkit.*;
+
+import java.io.UnsupportedEncodingException;
+import java.util.HashMap;
 
 public class GetActivity extends Activity {
 
@@ -43,7 +47,22 @@ public class GetActivity extends Activity {
         web.setWebChromeClient(new MyWebChromeClient());
         web.setWebViewClient(new MyWebViewClient());
         setProgressBarVisibility(true);
-        web.loadUrl(getIntent().getDataString());
+
+        if (this.preferences.isBasicAuth()) {
+            //http://stackoverflow.com/questions/8935537/android-webview-with-https-connection-and-basic-auth-how-to-get-this-working
+            HashMap<String, String> headers = new HashMap<String, String>();
+            String usernamePassword = this.preferences.getUserName() + ":" + this.preferences.getPassword();
+            String authorization = null;
+            try {
+                authorization = "Basic " + Base64.encodeToString(usernamePassword.getBytes("UTF-8"), Base64.NO_WRAP);
+            } catch (UnsupportedEncodingException e) {
+                throw new RuntimeException(e);  //should never happen
+            }
+            headers.put("Authorization", authorization);
+            web.loadUrl(getIntent().getDataString(), headers);
+        } else {
+            web.loadUrl(getIntent().getDataString());
+        }
     }
 
     void setIcon(Drawable icon) {
@@ -54,7 +73,7 @@ public class GetActivity extends Activity {
         }
     }
 
-    class MyWebViewClient extends WebViewClient {
+    static class MyWebViewClient extends WebViewClient {
 
         @Override
         public boolean shouldOverrideUrlLoading(WebView view, String url) {
@@ -69,21 +88,6 @@ public class GetActivity extends Activity {
             // this will ignore the Ssl error and will go forward to your site
             if (handler != null) {
                 handler.proceed();
-            }
-        }
-
-        @Override
-        public void onReceivedHttpAuthRequest(WebView view, HttpAuthHandler handler, String host, String realm) {
-            if (handler == null) {
-                return;
-            }
-            if (!handler.useHttpAuthUsernamePassword()) {
-                handler.cancel();
-            }
-            if (preferences.isBasicAuth()) {
-                handler.proceed(preferences.getUserName(), preferences.getPassword());
-            } else {
-                handler.cancel();
             }
         }
 
