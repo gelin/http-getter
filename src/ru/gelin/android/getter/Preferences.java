@@ -9,6 +9,8 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Environment;
 import android.preference.PreferenceManager;
+import android.util.DisplayMetrics;
+import android.view.WindowManager;
 import android.webkit.WebIconDatabase;
 
 import java.io.File;
@@ -35,7 +37,6 @@ public class Preferences {
 
     static final String ICON_FILE = "favicon.png";
     static final int ICON_DEFAULT = R.drawable.http;
-    static final Rect ICON_RECT = new Rect(0, 0, 128, 128);
 
     Context context;
     SharedPreferences preferences;
@@ -96,24 +97,33 @@ public class Preferences {
     }
 
     public Drawable getIcon() {
+        Rect rect = getIconRect();
         FileInputStream file;
         try {
             file = this.context.openFileInput(ICON_FILE);
         } catch (FileNotFoundException e) {
             Drawable drawable = this.context.getResources().getDrawable(ICON_DEFAULT);
-            drawable.setBounds(ICON_RECT);
+            drawable.setBounds(rect);
             return drawable;
         }
         Bitmap bitmap = BitmapFactory.decodeStream(file);
         BitmapDrawable drawable = new BitmapDrawable(this.context.getResources(), bitmap);
         //drawable.setFilterBitmap(false);
-        drawable.setBounds(ICON_RECT);
+        drawable.setBounds(rect);
         return drawable;
     }
 
     public void clearIcon() {
         WebIconDatabase.getInstance().removeAllIcons();
         this.context.deleteFile(ICON_FILE);
+    }
+
+    Rect getIconRect() {
+        DisplayMetrics metrics = new DisplayMetrics();
+        WindowManager manager = (WindowManager)this.context.getSystemService(Context.WINDOW_SERVICE);
+        manager.getDefaultDisplay().getMetrics(metrics);
+        int size = (int)(128 * metrics.density);
+        return new Rect(0, 0, size, size);
     }
 
 }
