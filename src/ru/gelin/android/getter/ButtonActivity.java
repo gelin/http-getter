@@ -151,8 +151,8 @@ public class ButtonActivity extends Activity implements DialogInterface.OnClickL
 
     public void onActivityResult(int requestCode, int resultCode, Intent intent) {
         IntentResult scanResult = IntentIntegrator.parseActivityResult(requestCode, resultCode, intent);
-        if (scanResult != null && this.urlEdit != null) {
-            this.urlEdit.setText(scanResult.getContents());
+        if (scanResult != null && scanResult.getContents() != null && this.urlEdit != null) {
+                this.urlEdit.setText(scanResult.getContents());
         }
     }
 
