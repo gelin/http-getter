@@ -13,6 +13,8 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.TextView;
+import com.google.zxing.integration.android.IntentIntegrator;
+import com.google.zxing.integration.android.IntentResult;
 
 public class ButtonActivity extends Activity implements DialogInterface.OnClickListener {
 
@@ -140,6 +142,18 @@ public class ButtonActivity extends Activity implements DialogInterface.OnClickL
         boolean checked = ((CheckBox)view).isChecked();
         this.userNameEdit.setVisibility(checked ? View.VISIBLE : View.GONE);
         this.passwordEdit.setVisibility(checked ? View.VISIBLE : View.GONE);
+    }
+
+    public void scanQR(View view) {
+        IntentIntegrator integrator = new IntentIntegrator(this);
+        integrator.initiateScan();
+    }
+
+    public void onActivityResult(int requestCode, int resultCode, Intent intent) {
+        IntentResult scanResult = IntentIntegrator.parseActivityResult(requestCode, resultCode, intent);
+        if (scanResult != null && this.urlEdit != null) {
+            this.urlEdit.setText(scanResult.getContents());
+        }
     }
 
 }

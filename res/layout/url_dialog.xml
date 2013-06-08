@@ -16,7 +16,8 @@
             android:layout_alignParentRight="true"
             android:drawableLeft="@drawable/qrcode"
             android:paddingLeft="14dp"
-            android:paddingRight="14dp"/>
+            android:paddingRight="14dp"
+            android:onClick="scanQR"/>
     <CheckBox android:id="@+id/basicauth"
               android:layout_width="wrap_content"
               android:layout_height="wrap_content"
