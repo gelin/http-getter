@@ -46,6 +46,10 @@ public class GetActivity extends Activity {
         WebView web = (WebView)findViewById(R.id.web);
         web.setWebChromeClient(new MyWebChromeClient());
         web.setWebViewClient(new MyWebViewClient());
+
+        WebSettings settings = web.getSettings();
+        settings.setJavaScriptEnabled(true);
+
         setProgressBarVisibility(true);
 
         if (this.preferences.isBasicAuth()) {
