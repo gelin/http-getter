@@ -1,9 +1,11 @@
 syntax: glob
-.idea/*
-gen/*
-out/*
+
+.idea
+.gradle
+gen
+out
+build
+bin
 local.properties
 upload.credentials.properties
-bin/*
-build/*
 *.iml
